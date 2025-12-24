@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-from data_loader import load_stock
-from indicators import compute_indicators, compute_atr
-from trade_levels import calculate_trade_levels
-from scoring import bullish_score, trend_label
+import streamlit as st
+from universe import NSE500
+from data_loader import get_price_data, get_fundamental_info
+from fundamentals import fundamental_summary
+from technicals import technical_summary, entry_target_exit
 from time_to_target import estimate_time_to_target
 
 # ==============================
@@ -151,3 +152,4 @@ else:
             st.dataframe(pd.DataFrame(results))
         else:
             st.warning("No bullish stocks found under current conditions.")
+
