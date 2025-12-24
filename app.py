@@ -13,6 +13,17 @@ st.info(
     "It runs on historical data and works even during market closed hours."
 )
 
+from time_to_target import estimate_time_to_target
+
+time_info = estimate_time_to_target(df, atr)
+
+if time_info:
+    st.subheader("⏱ Historical Time-to-Target")
+    st.write(f"Typical: {time_info['median_days']} trading days")
+    st.write(f"Fastest: {time_info['min_days']} days")
+    st.write(f"Slowest: {time_info['max_days']} days")
+    st.caption("Based on historical tendencies, not a prediction.")
+
 # --------------------------------------------------
 # USER INTEREST STOCK
 # --------------------------------------------------
@@ -83,3 +94,4 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
