@@ -19,51 +19,37 @@ st.info(
 # USER INTEREST STOCK
 # --------------------------------------------------
 
-st.header("🔍 Analyze Your Stock")
+if st.button("Analyze"):
+    df = load_stock(symbol, period)
 
-user_stock = st.text_input(
-    "Enter NSE stock symbol (e.g., TATAMOTORS, INFY, RELIANCE):"
-)
-
-if user_stock:
-    symbol = user_stock.strip().upper() + ".NS"
-
-    df = get_price_data(symbol)
     if df is None:
-        st.error("No data found for this stock.")
+        st.error("No data found")
     else:
-        info = get_fundamental_info(symbol)
+        df = compute_indicators(df)
+        atr = compute_atr(df).iloc[-1]
 
-        tech = technical_summary(df)
-        funda = fundamental_summary(info)
-        trade = entry_target_exit(tech)
+        ltp = df["Close"].iloc[-1]
+        entry, target, stop = calculate_trade_levels(ltp, atr, trade_type)
+
+        # ✅ NOW df and atr exist
+        time_info = estimate_time_to_target(df, atr)
+
+        st.subheader(f"📌 {symbol}")
+        st.write("**Trend:**", trend_label(df))
+        st.write("**LTP:** ₹", round(ltp, 2))
 
         col1, col2, col3 = st.columns(3)
+        col1.metric("Entry", entry)
+        col2.metric("Target", target)
+        col3.metric("Stop Loss", stop)
 
-        with col1:
-            st.subheader("📈 Technical View")
-            st.json(tech)
-
-        with col2:
-            st.subheader("🏦 Fundamental View")
-            st.json(funda)
-
-        with col3:
-            st.subheader("🎯 Trade Levels")
-            st.json(trade)
-
-time_info = estimate_time_to_target(df, atr)
-
-if time_info:
-    st.subheader("⏱ Historical Time-to-Target")
-    st.write(f"Typical: {time_info['median_days']} trading days")
-    st.write(f"Fastest: {time_info['min_days']} days")
-    st.write(f"Slowest: {time_info['max_days']} days")
-    st.caption("Based on historical tendencies, not a prediction.")
-
-
-
-
+        # ⏱ Time-to-target
+        if time_info:
+            st.subheader("⏱ Historical Time-to-Target")
+            st.write(f"Typical: {time_info['median_days']} trading days")
+            st.write(f"Fastest: {time_info['min_days']} days")
+            st.write(f"Slowest: {time_info['max_days']} days")
+            st.caption("Based on historical tendencies, not a prediction.")
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -97,5 +83,6 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
