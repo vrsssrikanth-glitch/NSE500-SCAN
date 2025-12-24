@@ -3,6 +3,7 @@ from universe import NSE500
 from data_loader import get_price_data, get_fundamental_info
 from fundamentals import fundamental_summary
 from technicals import technical_summary, entry_target_exit
+from time_to_target import estimate_time_to_target
 
 st.set_page_config(page_title="Personal Stock Scanner", layout="wide")
 
@@ -13,16 +14,6 @@ st.info(
     "It runs on historical data and works even during market closed hours."
 )
 
-from time_to_target import estimate_time_to_target
-
-time_info = estimate_time_to_target(df, atr)
-
-if time_info:
-    st.subheader("⏱ Historical Time-to-Target")
-    st.write(f"Typical: {time_info['median_days']} trading days")
-    st.write(f"Fastest: {time_info['min_days']} days")
-    st.write(f"Slowest: {time_info['max_days']} days")
-    st.caption("Based on historical tendencies, not a prediction.")
 
 # --------------------------------------------------
 # USER INTEREST STOCK
@@ -61,6 +52,18 @@ if user_stock:
             st.subheader("🎯 Trade Levels")
             st.json(trade)
 
+time_info = estimate_time_to_target(df, atr)
+
+if time_info:
+    st.subheader("⏱ Historical Time-to-Target")
+    st.write(f"Typical: {time_info['median_days']} trading days")
+    st.write(f"Fastest: {time_info['min_days']} days")
+    st.write(f"Slowest: {time_info['max_days']} days")
+    st.caption("Based on historical tendencies, not a prediction.")
+
+
+
+
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -94,4 +97,5 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
