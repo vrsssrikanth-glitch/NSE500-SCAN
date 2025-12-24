@@ -19,37 +19,41 @@ st.info(
 # USER INTEREST STOCK
 # --------------------------------------------------
 
-if st.button("Analyze"):
-    df = load_stock(symbol, period)
+if mode == "Single Stock":
+    symbol = st.text_input("Enter Stock Symbol (e.g. NATIONALUM.NS)")
 
-    if df is None:
-        st.error("No data found")
-    else:
-        df = compute_indicators(df)
-        atr = compute_atr(df).iloc[-1]
+    if st.button("Analyze"):
+        if symbol.strip() == "":
+            st.warning("Please enter a stock symbol")
+        else:
+            df = load_stock(symbol, period)
 
-        ltp = df["Close"].iloc[-1]
-        entry, target, stop = calculate_trade_levels(ltp, atr, trade_type)
+            if df is None:
+                st.error("No data found")
+            else:
+                df = compute_indicators(df)
+                atr = compute_atr(df).iloc[-1]
 
-        # ✅ NOW df and atr exist
-        time_info = estimate_time_to_target(df, atr)
+                ltp = df["Close"].iloc[-1]
+                entry, target, stop = calculate_trade_levels(ltp, atr, trade_type)
 
-        st.subheader(f"📌 {symbol}")
-        st.write("**Trend:**", trend_label(df))
-        st.write("**LTP:** ₹", round(ltp, 2))
+                time_info = estimate_time_to_target(df, atr)
 
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Entry", entry)
-        col2.metric("Target", target)
-        col3.metric("Stop Loss", stop)
+                st.subheader(f"📌 {symbol}")
+                st.write("**Trend:**", trend_label(df))
+                st.write("**LTP:** ₹", round(ltp,2))
 
-        # ⏱ Time-to-target
-        if time_info:
-            st.subheader("⏱ Historical Time-to-Target")
-            st.write(f"Typical: {time_info['median_days']} trading days")
-            st.write(f"Fastest: {time_info['min_days']} days")
-            st.write(f"Slowest: {time_info['max_days']} days")
-            st.caption("Based on historical tendencies, not a prediction.")
+                col1, col2, col3 = st.columns(3)
+                col1.metric("Entry", entry)
+                col2.metric("Target", target)
+                col3.metric("Stop Loss", stop)
+
+                if time_info:
+                    st.subheader("⏱ Historical Time-to-Target")
+                    st.write(f"Typical: {time_info['median_days']} trading days")
+                    st.write(f"Fastest: {time_info['min_days']} days")
+                    st.write(f"Slowest: {time_info['max_days']} days")
+                    st.caption("Based on historical tendencies, not a prediction.")
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -83,6 +87,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
