@@ -50,7 +50,7 @@ if mode == "Single Stock":
         if symbol.strip() == "":
             st.warning("Please enter a valid stock symbol.")
         else:
-            df = load_stock(symbol, period)
+            df = get_price_data(symbol, period)
 
             if df is None or df.empty:
                 st.error("No data found for this symbol.")
@@ -152,4 +152,5 @@ else:
             st.dataframe(pd.DataFrame(results))
         else:
             st.warning("No bullish stocks found under current conditions.")
+
 
