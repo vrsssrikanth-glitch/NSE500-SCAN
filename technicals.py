@@ -1,3 +1,4 @@
+import numpy as np
 from indicators import compute_rsi
 
 def technical_summary(df):
@@ -26,23 +27,42 @@ def technical_summary(df):
 
 
 def entry_target_exit(tech):
-    ltp = tech["LTP"]
+    """
+    Calculates Entry, Target, Stoploss and
+    estimated working days to reach Entry & Target (ATR-based)
+    """
 
+    ltp = tech["LTP"]
+    atr = tech.get("ATR", None)
+
+    if atr is None or atr <= 0:
+        return {
+            "Entry Price": ltp,
+            "Target Price": None,
+            "Stop Loss": None,
+            "Estimated Working Days to Entry": None,
+            "Estimated Working Days to Target": None
+        }
+
+    # Strategy logic
     if tech["Trend"] == "Bullish":
-        entry = ltp * 0.98
-        target = ltp * 1.15
-        stop = ltp * 0.94
-    elif tech["Trend"] == "Bearish":
-        entry = ltp * 0.95
-        target = ltp * 1.20
-        stop = ltp * 0.90
+        entry = round(ltp - 0.5 * atr, 2)     # pullback entry
+        target = round(entry + 2 * atr, 2)
+        stoploss = round(entry - atr, 2)
     else:
-        entry = ltp
-        target = ltp * 1.10
-        stop = ltp * 0.95
+        entry = round(ltp + 0.5 * atr, 2)
+        target = round(entry - 2 * atr, 2)
+        stoploss = round(entry + atr, 2)
+
+    days_to_entry = int(np.ceil(abs(entry - ltp) / atr))
+    days_to_target = int(np.ceil(abs(target - entry) / atr))
 
     return {
-        "Suggested Entry": round(entry, 2),
-        "Target Price": round(target, 2),
-        "Stop Loss": round(stop, 2)
+        "LTP": round(ltp, 2),
+        "Entry Price": entry,
+        "Target Price": target,
+        "Stop Loss": stoploss,
+        "ATR": round(atr, 2),
+        "Estimated Working Days to Entry": days_to_entry,
+        "Estimated Working Days to Target": days_to_target
     }
