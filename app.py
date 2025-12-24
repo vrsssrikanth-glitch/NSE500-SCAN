@@ -40,7 +40,7 @@ if mode == "Single Stock":
         if symbol.strip() == "":
             st.warning("Please enter a stock symbol")
         else:
-            df = load_stock(symbol, period)
+            df = load_stock(sym, period)
 
             if df is None:
                 st.error("No data found")
@@ -101,6 +101,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
