@@ -1,30 +1,33 @@
 import numpy as np
+import pandas as pd
 from indicators import compute_rsi
 
 def technical_summary(df):
+    # ATR calculation
+    high = df["High"]
+    low = df["Low"]
     close = df["Close"]
-    if hasattr(close, "columns"):
-        close = close.iloc[:, 0]
 
-    ema50 = close.ewm(span=50).mean()
-    ema200 = close.ewm(span=200).mean()
-    rsi = compute_rsi(close).iloc[-1]
-    ltp = float(close.iloc[-1])
+    tr1 = high - low
+    tr2 = (high - close.shift()).abs()
+    tr3 = (low - close.shift()).abs()
 
-    trend = "Sideways"
-    if ltp > ema50.iloc[-1] > ema200.iloc[-1]:
-        trend = "Bullish"
-    elif ltp < ema200.iloc[-1]:
-        trend = "Bearish"
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    atr = tr.rolling(14).mean().iloc[-1]
+
+    ema50 = close.ewm(span=50).mean().iloc[-1]
+    ema200 = close.ewm(span=200).mean().iloc[-1]
+
+    trend = "Bullish" if ema50 > ema200 else "Bearish"
 
     return {
-        "LTP": round(ltp, 2),
-        "RSI(14)": round(rsi, 2),
-        "EMA50": round(ema50.iloc[-1], 2),
-        "EMA200": round(ema200.iloc[-1], 2),
+        "LTP": round(close.iloc[-1], 2),
+        "RSI(14)": round(rsi(close), 2),
+        "EMA50": round(ema50, 2),
+        "EMA200": round(ema200, 2),
+        "ATR": round(atr, 2),
         "Trend": trend
     }
-
 
 def entry_target_exit(tech):
     """
@@ -66,3 +69,4 @@ def entry_target_exit(tech):
         "Estimated Working Days to Entry": days_to_entry,
         "Estimated Working Days to Target": days_to_target
     }
+
