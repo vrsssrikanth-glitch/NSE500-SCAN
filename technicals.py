@@ -2,22 +2,31 @@ import numpy as np
 import pandas as pd
 from indicators import compute_rsi
 
+import pandas as pd
+import numpy as np
+
 def technical_summary(df):
-    # ATR calculation
+    close = df["Close"]
     high = df["High"]
     low = df["Low"]
-    close = df["Close"]
 
+    # --- ATR calculation ---
     tr1 = high - low
     tr2 = (high - close.shift()).abs()
     tr3 = (low - close.shift()).abs()
 
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-    atr = tr.rolling(14).mean().iloc[-1]
+    atr_series = tr.rolling(window=14).mean()
+    atr = atr_series.iloc[-1]
 
-    ema50 = close.ewm(span=50).mean().iloc[-1]
-    ema200 = close.ewm(span=200).mean().iloc[-1]
+    # --- EMA calculation (SCALAR ONLY) ---
+    ema50_series = close.ewm(span=50, adjust=False).mean()
+    ema200_series = close.ewm(span=200, adjust=False).mean()
 
+    ema50 = ema50_series.iloc[-1]
+    ema200 = ema200_series.iloc[-1]
+
+    # --- Trend decision (scalar comparison) ---
     trend = "Bullish" if ema50 > ema200 else "Bearish"
 
     return {
@@ -69,4 +78,5 @@ def entry_target_exit(tech):
         "Estimated Working Days to Entry": days_to_entry,
         "Estimated Working Days to Target": days_to_target
     }
+
 
