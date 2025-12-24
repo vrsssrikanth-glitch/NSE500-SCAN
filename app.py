@@ -7,11 +7,25 @@ from time_to_target import estimate_time_to_target
 
 st.set_page_config(page_title="Personal Stock Scanner", layout="wide")
 
-st.title("📊 Personal NSE Stock Scanner (Offline)")
+st.title("📊 Personal Stock Scanner")
 
-st.info(
-    "This tool is for personal analysis only. "
-    "It runs on historical data and works even during market closed hours."
+# ✅ DEFINE mode FIRST
+mode = st.radio(
+    "Select Mode",
+    ["Single Stock", "NSE500 Scan"]
+)
+
+# ✅ DEFINE period selector
+period = st.selectbox(
+    "Select Analysis Period",
+    ["6mo", "1y", "2y", "5y"],
+    index=2
+)
+
+trade_type = st.selectbox(
+    "Trade Style",
+    ["short", "positional"],
+    index=1
 )
 
 
@@ -87,6 +101,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
