@@ -2,42 +2,32 @@ import numpy as np
 import pandas as pd
 from indicators import compute_rsi
 
-import pandas as pd
-import numpy as np
-
 def technical_summary(df):
     close = df["Close"]
     high = df["High"]
     low = df["Low"]
 
-    # --- ATR calculation ---
+    # --- ATR ---
     tr1 = high - low
     tr2 = (high - close.shift()).abs()
     tr3 = (low - close.shift()).abs()
-
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-    atr_series = tr.rolling(window=14).mean()
-    atr = atr_series.iloc[-1]
+    atr = float(tr.rolling(14).mean().iloc[-1])
 
-    # --- EMA calculation (SCALAR ONLY) ---
-    ema50_series = close.ewm(span=50, adjust=False).mean()
-    ema200_series = close.ewm(span=200, adjust=False).mean()
+    # --- EMA (FORCED SCALARS) ---
+    ema50 = float(close.ewm(span=50, adjust=False).mean().iloc[-1])
+    ema200 = float(close.ewm(span=200, adjust=False).mean().iloc[-1])
 
-    ema50 = ema50_series.iloc[-1]
-    ema200 = ema200_series.iloc[-1]
-
-    # --- Trend decision (scalar comparison) ---
     trend = "Bullish" if ema50 > ema200 else "Bearish"
 
     return {
-        "LTP": round(close.iloc[-1], 2),
-        "RSI(14)": round(rsi(close), 2),
-        "EMA50": round(ema50, 2),
-        "EMA200": round(ema200, 2),
-        "ATR": round(atr, 2),
+        "LTP": float(round(close.iloc[-1], 2)),
+        "RSI(14)": float(round(rsi(close), 2)),
+        "EMA50": float(round(ema50, 2)),
+        "EMA200": float(round(ema200, 2)),
+        "ATR": float(round(atr, 2)),
         "Trend": trend
     }
-
 def entry_target_exit(tech):
     """
     Calculates Entry, Target, Stoploss and
@@ -78,5 +68,6 @@ def entry_target_exit(tech):
         "Estimated Working Days to Entry": days_to_entry,
         "Estimated Working Days to Target": days_to_target
     }
+
 
 
