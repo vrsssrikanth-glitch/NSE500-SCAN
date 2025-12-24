@@ -58,8 +58,7 @@ if user_stock:
               f"⏳ Estimated **{trade['Estimated Working Days to Entry']} working days** "
               f"to reach Entry price"
              )
-
-           st.success(
+            st.success(
               f"🎯 After entry, estimated **{trade['Estimated Working Days to Target']} "
               f"working days** to reach Target"
              )
@@ -97,6 +96,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
