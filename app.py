@@ -46,9 +46,23 @@ if user_stock:
             st.subheader("🏦 Fundamental View")
             st.json(funda)
 
-        with col3:
-            st.subheader("🎯 Trade Levels")
-            st.json(trade)
+       with col3:
+    st.subheader("🎯 Trade Levels & Time Estimates")
+
+    st.metric("Current Price (LTP)", f"₹{trade['LTP']}")
+    st.metric("Entry Price", f"₹{trade['Entry Price']}")
+    st.metric("Target Price", f"₹{trade['Target Price']}")
+    st.metric("Stop Loss", f"₹{trade['Stop Loss']}")
+
+    st.info(
+        f"⏳ Estimated **{trade['Estimated Working Days to Entry']} working days** "
+        f"to reach Entry price"
+    )
+
+    st.success(
+        f"🎯 After entry, estimated **{trade['Estimated Working Days to Target']} "
+        f"working days** to reach Target"
+    )
 
 # --------------------------------------------------
 # BEST STOCK SCAN
@@ -83,3 +97,4 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
