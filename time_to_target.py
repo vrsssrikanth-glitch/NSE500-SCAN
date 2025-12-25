@@ -7,7 +7,7 @@ import pandas as pd
 
 def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
     df = df.copy().tail(lookback)
-
+    df = df.loc[:, ~df.columns.duplicated()]
     df["EMA50"] = df["Close"].ewm(span=50, adjust=False).mean()
     df["EMA200"] = df["Close"].ewm(span=200, adjust=False).mean()
 
@@ -26,14 +26,20 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
     times = []
 
     for i in range(len(df) - 30):
-        row = df.iloc[i]
+        idx = df.index[i]
 
-        if (
-            (row["Close"] > row["EMA50"])
-            and (row["EMA50"] > row["EMA200"])
-            and (row["RSI"] > 55)
-            and not np.isnan(row["ATR"])
-        ):
+        close = df.at[idx, "Close"]
+        ema50 = df.at[idx, "EMA50"]
+        ema200 = df.at[idx, "EMA200"]
+        rsi = df.at[idx, "RSI"]
+        atr = df.at[idx, "ATR"]
+
+if (
+    (close > ema50)
+    and (ema50 > ema200)
+    and (rsi > 55)
+    and not np.isnan(atr)
+):
             entry = row["Close"]
             target = entry + target_mult * row["ATR"]
 
