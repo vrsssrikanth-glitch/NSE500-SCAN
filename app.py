@@ -51,7 +51,7 @@ if user_stock:
             st.subheader("🎯 Trade Levels & Time Estimates")
 
             time_est = estimate_final_days_to_target(
-            df,
+            df= get_price_data(symbol)
             entry=trade["Entry Price"],
             target=trade["Target Price"]
             )
@@ -103,6 +103,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
