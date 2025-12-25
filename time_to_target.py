@@ -82,10 +82,15 @@ def estimate_time_to_target_trend_based(df, entry, target, lookback=60):
     if atr <= 0 or np.isnan(atr):
         return None
 
-    ema_slope = (df["EMA50"].iloc[-1] - df["EMA50"].iloc[-10]) / 10
-    momentum = (df["Close"].iloc[-1] - df["Close"].iloc[-10]) / 10
+    ema50_now  = float(df["EMA50"].iloc[-1])
+    ema50_prev = float(df["EMA50"].iloc[-10])
+    close_now  = float(df["Close"].iloc[-1])
+    close_prev = float(df["Close"].iloc[-10])
 
-    trend_speed = (ema_slope + momentum) / atr
+    ema_slope = (ema50_now - ema50_prev) / 10 
+    momentum  = (close_now - close_prev) / 10
+
+    trend_speed = float((ema_slope + momentum) / atr)
     if trend_speed <= 0:
         return None
 
