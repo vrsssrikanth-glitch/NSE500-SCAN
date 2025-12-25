@@ -44,9 +44,9 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
            days = future.index.get_loc(hit.index[0]) + 1
            times.append(days)
 if not times:
-   return None
+  return None
 
-return {
+  return {
         "median_days": int(np.median(times)),
         "min_days": int(np.min(times)),
         "max_days": int(np.max(times)),
