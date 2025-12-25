@@ -122,3 +122,28 @@ def estimate_final_days_to_target(df, entry, target):
         "historical_median_days": empirical["median_days"] if empirical else None,
         "historical_sample_size": empirical["sample_size"] if empirical else 0
     }
+
+def estimate_days_to_entry(df, entry, lookback=30):
+    import numpy as np
+
+    df = df.copy().tail(lookback)
+    df = df.loc[:, ~df.columns.duplicated()]
+
+    current = float(df["Close"].iloc[-1])
+
+    if current >= entry:
+        return 0
+
+    tr1 = df["High"] - df["Low"]
+    tr2 = (df["High"] - df["Close"].shift()).abs()
+    tr3 = (df["Low"] - df["Close"].shift()).abs()
+    tr = np.maximum.reduce([tr1, tr2, tr3])
+    atr = float(tr.rolling(14).mean().iloc[-1])
+
+    if np.isnan(atr) or atr <= 0:
+        return None
+
+    distance = entry - current
+    est_days = int(np.ceil(distance / atr))
+
+    return max(1, min(est_days, 10))
