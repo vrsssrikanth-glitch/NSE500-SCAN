@@ -49,19 +49,25 @@ if user_stock:
         with col3:
             st.subheader("🎯 Trade Levels & Time Estimates")
 
-            st.metric("Current Price (LTP)", f"₹{tech['LTP']}")
-            st.metric("Entry Price", f"₹{trade['Entry Price']}")
-            st.metric("Target Price", f"₹{trade['Target Price']}")
-            st.metric("Stop Loss", f"₹{trade['Stop Loss']}")
+            time_est = estimate_final_days_to_target(
+            df,
+            entry=trade["Entry Price"],
+            target=trade["Target Price"]
+            )
 
-            st.info(
-              f"⏳ Estimated **{trade['Estimated Working Days to Entry']} working days** "
-              f"to reach Entry price"
-             )
+            if time_est:
             st.success(
-              f"🎯 After entry, estimated **{trade['Estimated Working Days to Target']} "
-              f"working days** to reach Target"
+            f"⏳ Estimated **{time_est['final_estimated_days']} trading days** "
+            f"to reach target"
              )
+            
+            st.caption(
+            f"(Trend-based: {time_est['trend_based_days']} days | "
+            f"Historical median: {time_est['historical_median_days']} days, "
+            f"N={time_est['historical_sample_size']})"
+            )
+            else:
+            st.warning("⚠️ Insufficient trend strength or historical data")
 
 # --------------------------------------------------
 # BEST STOCK SCAN
@@ -96,6 +102,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
