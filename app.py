@@ -45,10 +45,10 @@ if user_stock:
         target=trade["Target Price"]
         )
 
-days_to_entry = estimate_days_to_entry(
-    df,
-    trade["Entry Price"]
-)
+        days_to_entry = estimate_days_to_entry(
+        df,
+        trade["Entry Price"]
+        )
 
 col1, col2, col3 = st.columns(3)
 
@@ -121,6 +121,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
