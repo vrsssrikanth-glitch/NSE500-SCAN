@@ -3,7 +3,7 @@ from universe import NSE500
 from data_loader import get_price_data, get_fundamental_info
 from fundamentals import fundamental_summary
 from technicals import technical_summary, entry_target_exit
-from time_to_target import estimate_time_to_target_empirical, estimate_time_to_target_trend_based, estimate_final_days_to_target
+ffrom time_to_target import estimate_final_days_to_target
 
 st.set_page_config(page_title="Personal Stock Scanner", layout="wide")
 
@@ -47,29 +47,33 @@ if user_stock:
             st.subheader("🏦 Fundamental View")
             st.json(funda)
             
-        with col3:
-            st.subheader("🎯 Trade Levels & Time Estimates")
+       with col3:
+            st.subheader("🎯 Trade Levels & Time Estimate")
 
+            st.metric("Current Price (LTP)", f"₹{tech['LTP']}")
+            st.metric("Entry Price", f"₹{trade['Entry Price']}")
+            st.metric("Target Price", f"₹{trade['Target Price']}")
+            st.metric("Stop Loss", f"₹{trade['Stop Loss']}")
+
+             # ---- Market-based time estimation ----
             time_est = estimate_final_days_to_target(
-            df= get_price_data(symbol),
+            df,
             entry=trade["Entry Price"],
             target=trade["Target Price"]
             )
 
             if time_est:
-              st.success(
-              f"⏳ Estimated **{time_est['final_estimated_days']} trading days** "
-              f"to reach target"
-              )
-            
-              st.caption(
-              f"(Trend-based: {time_est['trend_based_days']} days | "
-              f"Historical median: {time_est['historical_median_days']} days, "
-              f"N={time_est['historical_sample_size']})"
-              )
-            else:
-              st.warning("⚠️ Insufficient trend strength or historical data")
+               st.success(
+               f"⏳ Estimated **{time_est['final_days']} trading days** to reach target"
+               )
 
+               st.caption(
+               f"(Trend-based: {time_est['trend_based_days']} days | "
+               f"Historical median: {time_est['historical_median_days']} days | "
+               f"N = {time_est['historical_sample_size']})"
+               )
+           else:
+               st.warning("⚠️ Market trend or historical data insufficient")
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -103,6 +107,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
