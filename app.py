@@ -54,7 +54,8 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
   st.subheader("📈 Technical View")  
-    st.json(tech)
+  tech = technical_summary(df)
+  st.json(tech)
 
 with col2:
   st.subheader("🏦 Fundamental View")
@@ -121,6 +122,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
