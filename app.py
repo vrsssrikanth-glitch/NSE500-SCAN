@@ -72,7 +72,7 @@ if user_stock:
                f"Historical median: {time_est['historical_median_days']} days | "
                f"N = {time_est['historical_sample_size']})"
                )
-           else:
+            else:
                st.warning("⚠️ Market trend or historical data insufficient")
 # --------------------------------------------------
 # BEST STOCK SCAN
@@ -107,6 +107,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
