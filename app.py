@@ -50,7 +50,7 @@ days_to_entry = estimate_days_to_entry(
     trade["Entry Price"]
 )
 
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
         with col1:
             st.subheader("📈 Technical View")
@@ -61,33 +61,33 @@ days_to_entry = estimate_days_to_entry(
             st.json(funda)
         
         with col3:
-    st.subheader("⏳ Trade Time Estimation")
+            st.subheader("⏳ Trade Time Estimation")
 
-    if time_est is None:
-        st.warning("Insufficient data to estimate time.")
-    else:
-        days_entry_to_target = time_est["final_days"]
+            if time_est is None:
+              st.warning("Insufficient data to estimate time.")
+            else:
+              days_entry_to_target = time_est["final_days"]
 
-        if days_to_entry is None:
-            st.metric(
+            if days_to_entry is None:
+              st.metric(
                 "ENTRY → TARGET",
                 f"{days_entry_to_target} days"
-            )
-        else:
-            st.metric(
+                )
+            else:
+              st.metric(
                 "Days to ENTRY",
                 f"{days_to_entry} days"
-            )
+              )
 
-            st.metric(
+             st.metric(
                 "ENTRY → TARGET",
                 f"{days_entry_to_target} days"
-            )
+             )
 
-            st.metric(
+             st.metric(
                 "NOW → TARGET",
                 f"{days_to_entry + days_entry_to_target} days"
-            )
+             )
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -121,6 +121,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
