@@ -6,11 +6,10 @@ import pandas as pd
 # --------------------------------------------------
 
 def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
-    import numpy as np
-    import pandas as pd
-
     df = df.copy().tail(lookback)
-    df = df.loc[:, ~df.columns.duplicated()]  # 🔒 critical safety line
+
+# 🔒 FORCE UNIQUE COLUMN NAMES (KEEP FIRST OCCURRENCE)
+    df = df.loc[:, ~df.columns.duplicated(keep="first")]
 
     # Indicators
     df["EMA50"] = df["Close"].ewm(span=50, adjust=False).mean()
@@ -31,31 +30,28 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
     times = []
 
     for i in range(len(df) - 30):
-        idx = df.index[i]
 
-        close = df.at[idx, "Close"]
-        ema50 = df.at[idx, "EMA50"]
-        ema200 = df.at[idx, "EMA200"]
-        rsi = df.at[idx, "RSI"]
-        atr = df.at[idx, "ATR"]
+    close  = float(df["Close"].iloc[i])
+    ema50  = float(df["EMA50"].iloc[i])
+    ema200 = float(df["EMA200"].iloc[i])
+    rsi    = float(df["RSI"].iloc[i])
+    atr    = float(df["ATR"].iloc[i])
 
-        if (
-            close > ema50
-            and ema50 > ema200
-            and rsi > 55
-            and not np.isnan(atr)
-        ):
-            entry = close
-            target = entry + target_mult * atr
+    if (
+        close > ema50
+        and ema50 > ema200
+        and rsi > 55
+        and not np.isnan(atr)
+    ):
+        entry = close
+        target = entry + target_mult * atr
 
-            future = df.iloc[i + 1 : i + 31]
-            hit = future[future["High"] >= target]
+        future = df.iloc[i + 1 : i + 31]
+        hit = future[future["High"] >= target]
 
-            if not hit.empty:
-                days = hit.index[0] - future.index[0]
-                days = int(days.days) + 1
-                times.append(days)
-
+        if not hit.empty:
+            days = (hit.index[0] - future.index[0]).days + 1
+            times.append(days)
     if not times:
         return None
 
