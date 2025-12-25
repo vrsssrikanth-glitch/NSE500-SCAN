@@ -40,9 +40,9 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
          future = df.iloc[i + 1 : i + 31]
          hit = future[future["High"] >= target]
 
-       if not hit.empty:
-         days = future.index.get_loc(hit.index[0]) + 1
-         times.append(days)
+         if not hit.empty:
+           days = future.index.get_loc(hit.index[0]) + 1
+           times.append(days)
 if not times:
    return None
 
