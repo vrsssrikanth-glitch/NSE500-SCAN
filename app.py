@@ -56,18 +56,18 @@ if user_stock:
             )
 
             if time_est:
-            st.success(
-            f"⏳ Estimated **{time_est['final_estimated_days']} trading days** "
-            f"to reach target"
-             )
+              st.success(
+              f"⏳ Estimated **{time_est['final_estimated_days']} trading days** "
+              f"to reach target"
+              )
             
-            st.caption(
-            f"(Trend-based: {time_est['trend_based_days']} days | "
-            f"Historical median: {time_est['historical_median_days']} days, "
-            f"N={time_est['historical_sample_size']})"
-            )
+              st.caption(
+              f"(Trend-based: {time_est['trend_based_days']} days | "
+              f"Historical median: {time_est['historical_median_days']} days, "
+              f"N={time_est['historical_sample_size']})"
+              )
             else:
-            st.warning("⚠️ Insufficient trend strength or historical data")
+              st.warning("⚠️ Insufficient trend strength or historical data")
 
 # --------------------------------------------------
 # BEST STOCK SCAN
@@ -102,6 +102,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
