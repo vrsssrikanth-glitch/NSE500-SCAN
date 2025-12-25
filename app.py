@@ -47,7 +47,7 @@ if user_stock:
             st.subheader("🏦 Fundamental View")
             st.json(funda)
             
-       with col3:
+        with col3:
             st.subheader("🎯 Trade Levels & Time Estimate")
 
             st.metric("Current Price (LTP)", f"₹{tech['LTP']}")
@@ -107,6 +107,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
