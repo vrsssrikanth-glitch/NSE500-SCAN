@@ -56,9 +56,10 @@ def estimate_time_to_target_empirical(df: Optional[pd.DataFrame] = None,
     loss = -delta.where(delta < 0, 0.0)
 
     avg_gain = gain.rolling(14).mean()
-    avg_loss = loss.rolling(14).mean().replace(0, np.nan)  # avoid division by zero
+    avg_loss = loss.rolling(14).mean()  # don't globally replace zeros here
 
-    rs = avg_gain / avg_loss
+    # avoid division by zero for RSI calculation by replacing zeros only in denominator
+    rs = avg_gain / avg_loss.replace(0, np.nan)
     df["RSI"] = 100 - (100 / (1 + rs))
 
     tr1 = df["High"] - df["Low"]
@@ -73,7 +74,9 @@ def estimate_time_to_target_empirical(df: Optional[pd.DataFrame] = None,
     n = len(df)
     max_lookahead = 30
 
-    for pos in range(n - max_lookahead):
+    # Iterate over all rows that have at least one future bar to check.
+    # Allow cases where the available future window is smaller than max_lookahead.
+    for pos in range(n - 1):
         row = df.iloc[pos]
 
         # Skip if required indicators are missing for this row
@@ -88,7 +91,9 @@ def estimate_time_to_target_empirical(df: Optional[pd.DataFrame] = None,
             entry = float(row["Close"])
             target = entry + target_mult * float(row["ATR"])
 
-            future = df.iloc[pos + 1: pos + 1 + max_lookahead]
+            # cap the future slice to the end of the dataframe
+            future_end = min(pos + 1 + max_lookahead, n)
+            future = df.iloc[pos + 1: future_end]
 
             hit = future[future["High"] >= target]
 
@@ -98,9 +103,8 @@ def estimate_time_to_target_empirical(df: Optional[pd.DataFrame] = None,
                     hit_idx = hit.index[0]
                     days = df.index.get_loc(hit_idx) - df.index.get_loc(row.name)
                 except Exception:
-                    # fallback to positional compute
-                    hit_pos = hit.index[0]
-                    days = 1
+                    # fallback to positional compute (should rarely happen)
+                    days = int(hit.index.to_list()[0] - row.name) if False else 1
                 if days >= 1:
                     times.append(int(days))
 
