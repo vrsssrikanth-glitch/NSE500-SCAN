@@ -29,24 +29,24 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
         row = df.iloc[i]
 
         if (
-            row["Close"] > row["EMA50"] > row["EMA200"]
-            and row["RSI"] > 55
-            and not np.isnan(row["ATR"])
-        ):
-            entry = row["Close"]
-            target = entry + target_mult * row["ATR"]
+           (row["Close"] > row["EMA50"])
+           and (row["EMA50"] > row["EMA200"])
+           and (row["RSI"] > 55)
+           and not np.isnan(row["ATR"])
+         ):
+         entry = row["Close"]
+         target = entry + target_mult * row["ATR"]
 
-            future = df.iloc[i + 1 : i + 31]
-            hit = future[future["High"] >= target]
+         future = df.iloc[i + 1 : i + 31]
+         hit = future[future["High"] >= target]
 
-            if not hit.empty:
-                days = future.index.get_loc(hit.index[0]) + 1
-                times.append(days)
-
-    if not times:
+       if not hit.empty:
+         days = future.index.get_loc(hit.index[0]) + 1
+         times.append(days)
+      if not times:
         return None
 
-    return {
+     return {
         "median_days": int(np.median(times)),
         "min_days": int(np.min(times)),
         "max_days": int(np.max(times)),
