@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from data_loader import 
+from data_loader import get_price_data(symbol)
 
 def estimate_time_to_target_empirical(df= get_price_data(symbol), target_mult=2, lookback=250):
     """
