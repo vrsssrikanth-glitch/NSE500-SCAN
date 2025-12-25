@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
+def estimate_time_to_target_empirical(df= get_price_data(symbol), target_mult=2, lookback=250):
     """
     Empirical estimation using historical bullish regimes
     """
