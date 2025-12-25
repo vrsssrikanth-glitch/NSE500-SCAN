@@ -3,7 +3,7 @@ from universe import NSE500
 from data_loader import get_price_data, get_fundamental_info
 from fundamentals import fundamental_summary
 from technicals import technical_summary, entry_target_exit
-from time_to_traget import estimate_time_to_target_empirical, estimate_time_to_target_trend_based, estimate_final_days_to_target
+from time_to_traget import estimate_final_days_to_target
 
 st.set_page_config(page_title="Personal Stock Scanner", layout="wide")
 
@@ -103,6 +103,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
