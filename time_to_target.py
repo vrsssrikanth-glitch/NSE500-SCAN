@@ -6,8 +6,13 @@ import pandas as pd
 # --------------------------------------------------
 
 def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
+    import numpy as np
+    import pandas as pd
+
     df = df.copy().tail(lookback)
-    df = df.loc[:, ~df.columns.duplicated()]
+    df = df.loc[:, ~df.columns.duplicated()]  # 🔒 critical safety line
+
+    # Indicators
     df["EMA50"] = df["Close"].ewm(span=50, adjust=False).mean()
     df["EMA200"] = df["Close"].ewm(span=200, adjust=False).mean()
 
@@ -34,14 +39,14 @@ def estimate_time_to_target_empirical(df, target_mult=2, lookback=250):
         rsi = df.at[idx, "RSI"]
         atr = df.at[idx, "ATR"]
 
-if (
-    (close > ema50)
-    and (ema50 > ema200)
-    and (rsi > 55)
-    and not np.isnan(atr)
-):
-            entry = row["Close"]
-            target = entry + target_mult * row["ATR"]
+        if (
+            close > ema50
+            and ema50 > ema200
+            and rsi > 55
+            and not np.isnan(atr)
+        ):
+            entry = close
+            target = entry + target_mult * atr
 
             future = df.iloc[i + 1 : i + 31]
             hit = future[future["High"] >= target]
@@ -50,7 +55,6 @@ if (
                 days = future.index.get_loc(hit.index[0]) + 1
                 times.append(days)
 
-    # ⬅️ return happens AFTER loop, still INSIDE function
     if not times:
         return None
 
