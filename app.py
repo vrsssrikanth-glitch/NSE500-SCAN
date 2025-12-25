@@ -61,37 +61,33 @@ days_to_entry = estimate_days_to_entry(
             st.json(funda)
         
         with col3:
-            st.subheader("⏳ Time Estimation")
+    st.subheader("⏳ Trade Time Estimation")
 
-            if time_est is None:
-               st.warning("Insufficient data to estimate time to target.")
-            else:
-               days_entry_to_target = time_est["final_days"]
+    if time_est is None:
+        st.warning("Insufficient data to estimate time.")
+    else:
+        days_entry_to_target = time_est["final_days"]
 
-            if days_to_entry is None:
-               st.metric(
-               "Est. Days ENTRY → TARGET",
-               f"{days_entry_to_target} days"
-               ) 
-            else:
-               total_days = days_to_entry + days_entry_to_target
+        if days_to_entry is None:
+            st.metric(
+                "ENTRY → TARGET",
+                f"{days_entry_to_target} days"
+            )
+        else:
+            st.metric(
+                "Days to ENTRY",
+                f"{days_to_entry} days"
+            )
 
-               col1, col2, col3 = st.columns(3)
+            st.metric(
+                "ENTRY → TARGET",
+                f"{days_entry_to_target} days"
+            )
 
-               col1.metric(
-               "Est. Days to ENTRY",
-               f"{days_to_entry} days"
-               )
-
-               col2.metric(
-               "Est. Days ENTRY → TARGET",
-               f"{days_entry_to_target} days"
-               )
-
-              col3.metric(
-              "Est. Total Days (NOW → TARGET)",
-               f"{total_days} days"
-               )
+            st.metric(
+                "NOW → TARGET",
+                f"{days_to_entry + days_entry_to_target} days"
+            )
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -125,6 +121,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
