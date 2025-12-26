@@ -93,7 +93,7 @@ if user_stock:
 
                     st.metric(
                         "ENTRY → TARGET",
-                        f"{days_entry_to_target} days"
+                        f"{days_entry_to_target} trading days"
                     )
 
                     st.metric(
@@ -133,6 +133,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
