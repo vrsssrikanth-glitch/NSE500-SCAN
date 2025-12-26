@@ -63,7 +63,7 @@ if user_stock:
             st.json(funda)
 
         with col3:
-            st.subheader("⏳ Trade Time Estimation")
+            st.subheader("⏳ Trade Price Estimation")
 
     # ---- Price Levels ----
             st.markdown("**Price Levels**")
@@ -133,6 +133,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
