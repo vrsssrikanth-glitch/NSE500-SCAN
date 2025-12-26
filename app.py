@@ -39,55 +39,57 @@ if user_stock:
         tech = technical_summary(df)
         funda = fundamental_summary(info)
         trade = entry_target_exit(tech)
+
         time_est = estimate_final_days_to_target(
-        df,
-        entry=trade["Entry Price"],
-        target=trade["Target Price"]
+            df,
+            entry=trade["Entry Price"],
+            target=trade["Target Price"]
         )
 
         days_to_entry = estimate_days_to_entry(
-        df,
-        trade["Entry Price"]
+            df,
+            trade["Entry Price"]
         )
 
-col1, col2, col3 = st.columns(3)
+        # ====== 3 COLUMN LAYOUT (INSIDE user_stock BLOCK) ======
+        col1, col2, col3 = st.columns(3)
 
-with col1:
-  st.subheader("📈 Technical View")  
-  st.json(tech)
+        with col1:
+            st.subheader("📈 Technical View")
+            st.json(tech)
 
-with col2:
-  st.subheader("🏦 Fundamental View")
-  st.json(funda)
-        
-with col3:
-  st.subheader("⏳ Trade Time Estimation")
+        with col2:
+            st.subheader("🏦 Fundamental View")
+            st.json(funda)
 
-  if time_est is None:
-     st.warning("Insufficient data to estimate time.")
-  else:
-     days_entry_to_target = time_est["final_days"]
+        with col3:
+            st.subheader("⏳ Trade Time Estimation")
 
-  if days_to_entry is None:
-     st.metric(
-     "ENTRY → TARGET",
-     f"{days_entry_to_target} days"
-     )
-  else:
-     st.metric(
-     "Days to ENTRY",
-     f"{days_to_entry} days"
-     )
+            if time_est is None:
+                st.warning("Insufficient data to estimate time.")
+            else:
+                days_entry_to_target = time_est["final_days"]
 
-  st.metric(
-    "ENTRY → TARGET",
-     f"{days_entry_to_target} days"
-     )
+                if days_to_entry is None:
+                    st.metric(
+                        "ENTRY → TARGET",
+                        f"{days_entry_to_target} days"
+                    )
+                else:
+                    st.metric(
+                        "Days to ENTRY",
+                        f"{days_to_entry} days"
+                    )
 
-  st.metric(
-     "NOW → TARGET",
-      f"{days_to_entry + days_entry_to_target} days"
-      )
+                    st.metric(
+                        "ENTRY → TARGET",
+                        f"{days_entry_to_target} days"
+                    )
+
+                    st.metric(
+                        "NOW → TARGET",
+                        f"{days_to_entry + days_entry_to_target} days"
+                    )
 # --------------------------------------------------
 # BEST STOCK SCAN
 # --------------------------------------------------
@@ -121,6 +123,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
