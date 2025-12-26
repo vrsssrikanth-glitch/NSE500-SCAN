@@ -137,7 +137,7 @@ def estimate_days_to_entry(df, entry, lookback=30):
     tr1 = df["High"] - df["Low"]
     tr2 = (df["High"] - df["Close"].shift()).abs()
     tr3 = (df["Low"] - df["Close"].shift()).abs()
-    tr = np.maximum.reduce([tr1, tr2, tr3])
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
     atr = float(tr.rolling(14).mean().iloc[-1])
 
     if np.isnan(atr) or atr <= 0:
