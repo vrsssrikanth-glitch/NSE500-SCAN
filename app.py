@@ -65,6 +65,16 @@ if user_stock:
         with col3:
             st.subheader("⏳ Trade Time Estimation")
 
+    # ---- Price Levels ----
+            st.markdown("**Price Levels**")
+            st.metric("Entry Price", f"₹{trade['Entry Price']}")
+            st.metric("Target Price", f"₹{trade['Target Price']}")
+            st.metric("Stop Loss", f"₹{trade['Stop Loss']}")
+            
+            
+            
+            st.subheader("⏳ Trade Time Estimation")
+
             if time_est is None:
                 st.warning("Insufficient data to estimate time.")
             else:
@@ -123,6 +133,7 @@ if st.button("Run Scan"):
         st.success(f"📈 Best Bullish Stock (<₹500): {best_bull}")
     else:
         st.warning("No suitable bullish stock found.")
+
 
 
 
